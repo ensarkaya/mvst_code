@@ -7,7 +7,6 @@ interface props {
 }
 
 const SearchingInputField: React.FC<props> = ({ search, setSearch, handleSearch }) => {
-
     return (
         <Form onSubmit={handleSearch}>
             <FormGroup>
