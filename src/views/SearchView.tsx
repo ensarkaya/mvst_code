@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from "react";
-import UserInputField from "../components/UserInputField";
-import data from '../data/data.json';
+import data from "../data/data.json";
 import MaterialTable, { Column, Icons } from "@material-table/core";
 import {
     AddBox,
@@ -20,6 +19,7 @@ import {
     ViewColumn
 } from "@material-ui/icons";
 import { Container } from "@material-ui/core";
+import UserField from "../components/UserField";
 /*
 const tableIcons: Icons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -60,6 +60,7 @@ interface User {
     username: string;
     avatar: string;
     bio: string;
+    url: string;
     repos: Repo[];
 }
 interface Props{
@@ -73,6 +74,7 @@ const SearchView:React.FC<Props> = (props) =>
     const [users, setUsers] = useState<Array<User>>([]); //State of list of users
     const [showTable, setShowTable] = useState(false);
     const [repos, setRepos] = useState<Array<Repo>>([]);
+    const [currUser, setCurrUser] = useState<User>({id:"", repos:[],bio:"",avatar:"",username:"",name:"",url:""});
     const [isFound, setIsFound] = useState(false);
     useEffect(() => {
         let userList:User[] =[];
@@ -88,7 +90,7 @@ const SearchView:React.FC<Props> = (props) =>
                 };
                 newRepos.push(newRepo);
             });
-            let newUser:User = {id : data.user.id, name: data.user.name, username: data.user.login, avatar:data.user.avatarUrl, bio:data.user.bio,repos:newRepos};
+            let newUser:User = {id : data.user.id, name: data.user.name, username: data.user.login, avatar:data.user.avatarUrl, bio:data.user.bio,repos:newRepos, url:data.user.url};
             userList.push(newUser);
     })
         setUsers(userList);
@@ -100,6 +102,7 @@ const SearchView:React.FC<Props> = (props) =>
             if(props.userName === users[i].username){
                 setRepos(users[i].repos);
                 setIsFound(true);
+                setCurrUser(users[i]);
             }
         }
     }, [props.userName]);
@@ -125,10 +128,11 @@ const SearchView:React.FC<Props> = (props) =>
     return (
         <div>
             <div hidden={!isFound}>
+                <UserField name={currUser.name} bio={currUser.bio} avatarUrl={currUser.avatar} login={currUser.username} url={currUser.url}/>
                 <MaterialTable
                     title="Repositories"
                     columns={columns}
-                    data={repos}/>
+                    data={currUser.repos}/>
             </div>
             <div hidden={isFound}>
                 <h4> User does not exists!</h4>

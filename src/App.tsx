@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import SearchView from "./views/SearchView";
 import {Button, Form, FormGroup, Input, Label} from "reactstrap";
+import "bootstrap/dist/css/bootstrap.css";
 
 function App() {
 
