@@ -1,50 +1,9 @@
 import React, {useState, useEffect} from "react";
 import data from "../data/data.json";
 import MaterialTable, { Column, Icons } from "@material-table/core";
-import {
-    AddBox,
-    ArrowDownward,
-    Check,
-    ChevronLeft,
-    ChevronRight,
-    Clear,
-    DeleteOutline,
-    Edit,
-    FilterList,
-    FirstPage,
-    LastPage,
-    Remove,
-    SaveAlt,
-    Search,
-    ViewColumn
-} from "@material-ui/icons";
-import { Container } from "@material-ui/core";
+import {Col, Row} from "react-bootstrap";
 import UserField from "../components/UserField";
-/*
-const tableIcons: Icons = {
-    Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
-    Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
-    Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
-    DetailPanel: forwardRef((props, ref) => (
-        <ChevronRight {...props} ref={ref} />
-    )),
-    Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
-    Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
-    Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
-    FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
-    LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
-    NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
-    PreviousPage: forwardRef((props, ref) => (
-        <ChevronLeft {...props} ref={ref} />
-    )),
-    ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
-    Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
-    SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
-    ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
-    ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
-};
-*/
+
 //Repository interface
 interface Repo {
     name: string;
@@ -53,6 +12,7 @@ interface Repo {
     updatedAt: string;
     forkCount: number;
 }
+
 //User interface
 interface User {
     id: string;
@@ -65,17 +25,25 @@ interface User {
 }
 interface Props{
     userName: string;
-    search: string;
 }
 
+/**
+ * @description This component reads data from data.json when first rendered.
+ * After getting username from the App component, it searches it inside the array of Users.
+ * When search is successful, it creates a material-table component and pass the necessary data to it.
+ * When search is not successful, it warns user the there is no such user in data.
+ * @param props {username: username of the user to be searched}
+ *
+ */
 const SearchView:React.FC<Props> = (props) =>
 {
 
     const [users, setUsers] = useState<Array<User>>([]); //State of list of users
-    const [showTable, setShowTable] = useState(false);
     const [repos, setRepos] = useState<Array<Repo>>([]);
     const [currUser, setCurrUser] = useState<User>({id:"", repos:[],bio:"",avatar:"",username:"",name:"",url:""});
     const [isFound, setIsFound] = useState(false);
+
+    //Reading data from json and assigning them into users state at the beginning(like componentDidMount)
     useEffect(() => {
         let userList:User[] =[];
         data.map((data) => {
@@ -84,8 +52,8 @@ const SearchView:React.FC<Props> = (props) =>
                 let newRepo:Repo = {
                     name: repo.name,
                     description: repo.description,
-                    createdAt: repo.createdAt,
-                    updatedAt: repo.updatedAt,
+                    createdAt: repo.createdAt.slice(0,-1),
+                    updatedAt: repo.updatedAt.slice(0,-1),
                     forkCount: repo.forkCount,
                 };
                 newRepos.push(newRepo);
@@ -96,9 +64,9 @@ const SearchView:React.FC<Props> = (props) =>
         setUsers(userList);
     }, []);
 
+    //updating current user whenever props.userName changes
     useEffect(() => {
         for(let i:number = 0; i < users.length; i++){
-            //console.log(i, props.userName, users[i].username);
             if(props.userName === users[i].username){
                 setRepos(users[i].repos);
                 setIsFound(true);
@@ -117,6 +85,7 @@ const SearchView:React.FC<Props> = (props) =>
         | "currency";
     const string: IType = "string";
 
+    //columns of the table
     const [columns, setColumns] = useState([
         { title: "Name", field: "name", type: "string" as const },
         { title: "Description", field: "description", initialEditValue: " ", type: "string" as const },
@@ -128,11 +97,24 @@ const SearchView:React.FC<Props> = (props) =>
     return (
         <div>
             <div hidden={!isFound}>
-                <UserField name={currUser.name} bio={currUser.bio} avatarUrl={currUser.avatar} login={currUser.username} url={currUser.url}/>
-                <MaterialTable
-                    title="Repositories"
-                    columns={columns}
-                    data={currUser.repos}/>
+                <Row>
+                    <Col xs lg="2">
+                        <UserField name={currUser.name} bio={currUser.bio} avatarUrl={currUser.avatar} login={currUser.username} url={currUser.url}/>
+                    </Col>
+                    <Col >
+                        <MaterialTable
+                            style={{
+                                zIndex : 250000,
+                                width: '100%',
+                                marginLeft: '-5%',
+                                height: '100%',
+
+                            }}
+                            title="Repositories"
+                            columns={columns}
+                            data={currUser.repos}/>
+                    </Col>
+                </Row>
             </div>
             <div hidden={isFound}>
                 <h4> User does not exists!</h4>
