@@ -1,6 +1,6 @@
 **Github Repositories with Search Functionality**
 -
-This project allows search and sort functionalities over Github repositories.
+This project allows search and sort functionalities over Github repositories. I used static data taken from GraphQL explorer. For demo purposes you can only search the repositories of rengil and rodrigopk.
 
 **How to run the project**
 -
