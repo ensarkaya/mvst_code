@@ -52,8 +52,8 @@ const SearchView:React.FC<Props> = (props) =>
                 let newRepo:Repo = {
                     name: repo.name,
                     description: repo.description,
-                    createdAt: repo.createdAt.slice(0,-1),
-                    updatedAt: repo.updatedAt.slice(0,-1),
+                    createdAt: repo.createdAt.slice(0,-10),
+                    updatedAt: repo.updatedAt.slice(0,-10),
                     forkCount: repo.forkCount,
                 };
                 newRepos.push(newRepo);
