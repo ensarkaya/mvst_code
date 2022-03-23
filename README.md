@@ -37,7 +37,7 @@ I think there are several points that I was not quite sure about the project:
 **Data creation**
 -
 I used GraphQL explorer(https://docs.github.com/en/graphql/overview/explorer) to extract data from github with the following query:
-### `
+
 {
   user(login: "enter username here") {
     id
@@ -57,4 +57,4 @@ I used GraphQL explorer(https://docs.github.com/en/graphql/overview/explorer) to
     }
   }
 }
-`
+
